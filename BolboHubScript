@@ -131,7 +131,7 @@ local Toggle = ShopTab:CreateToggle({
    end,
 })
 
-local ShopSection = MainTab:CreateSection("Auto Buy Merchant")
+local ShopSection = ShopTab:CreateSection("Auto Buy Merchant")
 
 -- Flaga kontrolująca automatyczne zakupy u merchantów
 local AutoMerchantEnabled = false
@@ -166,7 +166,7 @@ local Toggle = ShopTab:CreateToggle({
    end,
 })
 
-local ShopSection = MainTab:CreateSection("Auto Buy Fish Merchant")
+local ShopSection = ShopTab:CreateSection("Auto Buy Fish Merchant")
 
 -- Flaga kontrolująca automatyczne działanie
 local AutoFishingMerchantEnabled = false
