@@ -57,8 +57,6 @@ local Toggle = MainTab:CreateToggle({
    end,
 })
 
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
 -- Tworzenie głównego okna Rayfield
 local Window = Rayfield:CreateWindow({
    Name = "Bolbo Hub | Pets GO",
