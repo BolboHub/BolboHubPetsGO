@@ -64,23 +64,11 @@ local Toggle = MainTab:CreateToggle({
     Callback = function(Value)
         local player = game.Players.LocalPlayer
         local character = player.Character or player.CharacterAdded:Wait()
-        
-        -- Funkcja teleportacji i klikania
-        local function teleportAndClick(thing)
-            -- Sprawdzanie, czy model nie ma nazwy "Highlight"
-            if thing.Name ~= "Highlight" then
-                -- Teleportacja gracza na pozycję modelu
-                character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(thing.Position)
-                task.wait(0.1)  -- Czekanie 0.1 sekundy przed kliknięciem
-                -- Kliknięcie na model (tutaj można dodać odpowiednią akcję, np. "Click")
-                -- Można dodać coś w stylu:
-                -- fireclickdetector(thing:FindFirstChildOfClass("ClickDetector"))
-                
-                -- Czekanie na zniknięcie modelu
-                while thing and thing.Parent do
-                    task.wait(0.5)  -- Sprawdzanie co 0.5 sekundy
-                end
-            end
+
+        -- Funkcja teleportacji do odpowiedniego Part w modelu
+        local function teleportToPart(part)
+            -- Teleportacja gracza na pozycję Parta
+            character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(part.Position)
         end
         
         -- Funkcja do sprawdzania dostępnych Breakables
@@ -88,10 +76,14 @@ local Toggle = MainTab:CreateToggle({
             while Value do
                 -- Sprawdzanie wszystkich modeli w Breakables
                 for _, thing in pairs(game.Workspace.__THINGS.Breakables:GetChildren()) do
-                    -- Przeszukiwanie Breakables, ignorując modele z nazwą "Highlight"
-                    if thing:IsA("Model") and thing.Name ~= "Highlight" then
-                        teleportAndClick(thing)  -- Teleportowanie i klikanie
-                        break  -- Zatrzymanie pętli po znalezieniu pierwszego modelu
+                    -- Sprawdzanie, czy obiekt jest w folderze Breakables i ma nazwę zaczynającą się od "Breakables."
+                    if thing:IsA("Model") and thing.Name:match("^Breakables%.%d+$") then
+                        -- Szukanie Parta w modelu
+                        local part = thing:FindFirstChild("Part")  -- Zakładając, że Part nazywa się "Part"
+                        if part then
+                            teleportToPart(part)  -- Teleportowanie do Parta
+                            break  -- Zatrzymanie pętli po znalezieniu pierwszego modelu
+                        end
                     end
                 end
                 task.wait(1)  -- Sprawdzanie co 1 sekundę
@@ -104,7 +96,6 @@ local Toggle = MainTab:CreateToggle({
         end
     end,
 })
-
 
 -- Flaga kontrolująca pętlę teleportacji
 local monitoring = false
