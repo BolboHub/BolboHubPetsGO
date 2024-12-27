@@ -27,71 +27,6 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
--- Tworzenie zakładki i sekcji
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Auto Actions")
-
--- Flaga kontrolująca działanie automatycznego vending machine
-local AutoVendingMachineEnabled = false
-
--- Argumenty dla vending machine
-local args = {
-    [1] = "PotionVendingMachine"
-}
-
--- Funkcja automatycznego działania
-local function StartAutoVendingMachine()
-    while AutoVendingMachineEnabled do
-        game:GetService("ReplicatedStorage").Network.VendingMachines_Purchase:InvokeServer(unpack(args))
-        print("Zakupiono przedmiot!")
-        wait(1) -- Opóźnienie między kolejnymi zakupami
-    end
-end
-
--- Dodanie toggle do włączania/wyłączania funkcji
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto VendingMachine",
-   CurrentValue = false,
-   Flag = "autoVendingMachine",
-   Callback = function(Value)
-       if Value then
-           AutoVendingMachineEnabled = true
-           StartAutoVendingMachine()
-       else
-           AutoVendingMachineEnabled = false
-       end
-   end,
-})
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
-})
-
--- Tworzenie zakładki i sekcji
 local MainTab = Window:CreateTab("Main", nil)
 local MainSection = MainTab:CreateSection("Roll")
 
@@ -121,38 +56,78 @@ local Toggle = MainTab:CreateToggle({
        end
    end,
 })
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
+local Toggle = MainTab:CreateToggle({
+   Name = "Auto Fish",
+   CurrentValue = false,
+   Flag = "autofish",
+   Callback = function(Value)
+       local targetPosition = Vector3.new(-204.566, 2.07661, 206.916)
+       local player = game.Players.LocalPlayer
+       
+       -- Funkcja do teleportowania gracza
+       local function teleportToTarget()
+           player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+       end
+       
+       -- Pętla monitorująca pozycję gracza
+       local function monitorPlayerPosition()
+           while Value do
+               local currentPosition = player.Character.HumanoidRootPart.Position
+               local distance = (currentPosition - targetPosition).Magnitude
+               
+               -- Jeśli gracz jest oddalony o więcej niż 5 jednostek, teleportuj go
+               if distance > 5 then
+                   teleportToTarget()
+               end
+               task.wait(1)  -- Sprawdzanie co 1 sekundę
+           end
+       end
+       
+       -- Jeśli toggle jest włączone, uruchamiamy monitorowanie pozycji
+       if Value then
+           teleportToTarget()  -- Teleportujemy gracza na początek
+           monitorPlayerPosition()
+       end
+   end,
 })
 
--- Tworzenie zakładki i sekcji
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Merchant Purchases")
+local ShopTab = Window:CreateTab("Shop", nil)
+local MainSection = MainTab:CreateSection("Vending Machine")
+
+-- Flaga kontrolująca działanie automatycznego vending machine
+local AutoVendingMachineEnabled = false
+
+-- Argumenty dla vending machine
+local args = {
+    [1] = "PotionVendingMachine"
+}
+
+-- Funkcja automatycznego działania
+local function StartAutoVendingMachine()
+    while AutoVendingMachineEnabled do
+        game:GetService("ReplicatedStorage").Network.VendingMachines_Purchase:InvokeServer(unpack(args))
+        print("Zakupiono przedmiot!")
+        wait(1) -- Opóźnienie między kolejnymi zakupami
+    end
+end
+
+-- Dodanie toggle do włączania/wyłączania funkcji
+local Toggle = MainTab:CreateToggle({
+   Name = "Auto Buy VendingMachine",
+   CurrentValue = false,
+   Flag = "autoVendingMachine",
+   Callback = function(Value)
+       if Value then
+           AutoVendingMachineEnabled = true
+           StartAutoVendingMachine()
+       else
+           AutoVendingMachineEnabled = false
+       end
+   end,
+})
+
+local MainSection = MainTab:CreateSection("Auto Buy Merchant")
 
 -- Flaga kontrolująca automatyczne zakupy u merchantów
 local AutoMerchantEnabled = false
@@ -186,38 +161,8 @@ local Toggle = MainTab:CreateToggle({
        end
    end,
 })
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
-})
-
--- Tworzenie zakładki i sekcji
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Fishing Merchant")
+local MainSection = MainTab:CreateSection("Auto Buy Fish Merchant")
 
 -- Flaga kontrolująca automatyczne działanie
 local AutoFishingMerchantEnabled = false
@@ -289,454 +234,6 @@ local Toggle = MainTab:CreateToggle({
            StartAutoFishingMerchant()
        else
            AutoFishingMerchantEnabled = false
-       end
-   end,
-})
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
-})
-
--- Tworzenie zakładki i sekcji w interfejsie
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Fruits")
-
--- Flaga kontrolująca automatyczne jedzenie owoców
-local AutoEatFruitEnabled = false
-
--- Funkcja automatycznego jedzenia owoców
-local function StartAutoEatFruit()
-    while AutoEatFruitEnabled do
-        -- Wysłanie zapytania do serwera o konsumpcję owocu
-        local args = {
-            [1] = "51a64c333d634bf68ccf473f8a9f65d6",  -- ID owocu (przykład)
-            [2] = 1  -- Ilość owoców do spożycia
-        }
-        game:GetService("ReplicatedStorage").Network:FindFirstChild("Fruits: Consume"):InvokeServer(unpack(args))
-        print("Spożyto owoc tęczy")  -- Informacja w konsoli
-        wait(1)  -- Opóźnienie między próbami
-    end
-end
-
--- Tworzenie przełącznika (Toggle) do włączania/wyłączania automatycznego jedzenia owoców
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto Eat Rainbow Fruit",
-   CurrentValue = false,
-   Flag = "auto fruit",
-   Callback = function(Value)
-       if Value then
-           AutoEatFruitEnabled = true
-           StartAutoEatFruit()  -- Rozpoczęcie automatycznego jedzenia
-       else
-           AutoEatFruitEnabled = false  -- Zatrzymanie automatycznego jedzenia
-       end
-   end,
-})
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
-})
-
--- Tworzenie zakładki i sekcji w interfejsie
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Fruits")
-
--- Flaga kontrolująca automatyczne jedzenie owoców
-local AutoEatFruitEnabled = false
-
--- Funkcja automatycznego jedzenia owoców (Shiny Apple)
-local function StartAutoEatFruit()
-    while AutoEatFruitEnabled do
-        -- Wysłanie zapytania do serwera o konsumpcję owocu "Shiny Apple"
-        local args = {
-            [1] = "c6484b91eeb847889a62eb624dd42893",  -- ID owocu "Shiny Apple"
-            [2] = 1  -- Ilość owoców do spożycia (1 owoc)
-        }
-        game:GetService("ReplicatedStorage").Network:FindFirstChild("Fruits: Consume"):InvokeServer(unpack(args))
-        print("Spożyto owoc Shiny Apple")  -- Informacja w konsoli
-        wait(1)  -- Opóźnienie między próbami
-    end
-end
-
--- Tworzenie przełącznika (Toggle) do włączania/wyłączania automatycznego jedzenia owoców
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto Eat Shiny Apple",
-   CurrentValue = false,
-   Flag = "auto fruit",
-   Callback = function(Value)
-       if Value then
-           AutoEatFruitEnabled = true
-           StartAutoEatFruit()  -- Rozpoczęcie automatycznego jedzenia owoców
-       else
-           AutoEatFruitEnabled = false  -- Zatrzymanie automatycznego jedzenia
-       end
-   end,
-})
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
-})
-
--- Tworzenie zakładki i sekcji w interfejsie
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Fruits")
-
--- Flaga kontrolująca automatyczne jedzenie owoców
-local AutoEatFruitEnabled = false
-
--- Funkcja automatycznego jedzenia owoców (Shiny Banana)
-local function StartAutoEatFruit()
-    while AutoEatFruitEnabled do
-        -- Wysłanie zapytania do serwera o konsumpcję owocu "Shiny Banana"
-        local args = {
-            [1] = "eb567fa90e244d27b0d5b4c228bbf88c",  -- ID owocu "Shiny Banana"
-            [2] = 1  -- Ilość owoców do spożycia (1 owoc)
-        }
-        game:GetService("ReplicatedStorage").Network:FindFirstChild("Fruits: Consume"):InvokeServer(unpack(args))
-        print("Spożyto owoc Shiny Banana")  -- Informacja w konsoli
-        wait(1)  -- Opóźnienie między próbami
-    end
-end
-
--- Tworzenie przełącznika (Toggle) do włączania/wyłączania automatycznego jedzenia owoców
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto Eat Shiny Banana",
-   CurrentValue = false,
-   Flag = "auto fruit",
-   Callback = function(Value)
-       if Value then
-           AutoEatFruitEnabled = true
-           StartAutoEatFruit()  -- Rozpoczęcie automatycznego jedzenia owoców
-       else
-           AutoEatFruitEnabled = false  -- Zatrzymanie automatycznego jedzenia
-       end
-   end,
-})
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
-})
-
--- Tworzenie zakładki i sekcji w interfejsie
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Fruits")
-
--- Flaga kontrolująca automatyczne jedzenie owoców
-local AutoEatFruitEnabled = false
-
--- Funkcja automatycznego jedzenia owoców (Shiny Orange)
-local function StartAutoEatFruit()
-    while AutoEatFruitEnabled do
-        -- Wysłanie zapytania do serwera o konsumpcję owocu "Shiny Orange"
-        local args = {
-            [1] = "48abcc9333624fd088067417ba59f862",  -- ID owocu "Shiny Orange"
-            [2] = 1  -- Ilość owoców do spożycia (1 owoc)
-        }
-        game:GetService("ReplicatedStorage").Network:FindFirstChild("Fruits: Consume"):InvokeServer(unpack(args))
-        print("Spożyto owoc Shiny Orange")  -- Informacja w konsoli
-        wait(1)  -- Opóźnienie między próbami
-    end
-end
-
--- Tworzenie przełącznika (Toggle) do włączania/wyłączania automatycznego jedzenia owoców
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto Eat Shiny Orange",
-   CurrentValue = false,
-   Flag = "auto fruit",
-   Callback = function(Value)
-       if Value then
-           AutoEatFruitEnabled = true
-           StartAutoEatFruit()  -- Rozpoczęcie automatycznego jedzenia owoców
-       else
-           AutoEatFruitEnabled = false  -- Zatrzymanie automatycznego jedzenia
-       end
-   end,
-})
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
-})
-
--- Tworzenie zakładki i sekcji w interfejsie
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Fruits")
-
--- Flaga kontrolująca automatyczne jedzenie owoców
-local AutoEatFruitEnabled = false
-
--- Funkcja automatycznego jedzenia owoców (Shiny Pineapple)
-local function StartAutoEatFruit()
-    while AutoEatFruitEnabled do
-        -- Wysłanie zapytania do serwera o konsumpcję owocu "Shiny Pineapple"
-        local args = {
-            [1] = "3ad5c3c1e908434697ff756bd576aa09",  -- ID owocu "Shiny Pineapple"
-            [2] = 1  -- Ilość owoców do spożycia (1 owoc)
-        }
-        game:GetService("ReplicatedStorage").Network:FindFirstChild("Fruits: Consume"):InvokeServer(unpack(args))
-        print("Spożyto owoc Shiny Pineapple")  -- Informacja w konsoli
-        wait(1)  -- Opóźnienie między próbami
-    end
-end
-
--- Tworzenie przełącznika (Toggle) do włączania/wyłączania automatycznego jedzenia owoców
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto Eat Shiny Pineapple",
-   CurrentValue = false,
-   Flag = "auto fruit",
-   Callback = function(Value)
-       if Value then
-           AutoEatFruitEnabled = true
-           StartAutoEatFruit()  -- Rozpoczęcie automatycznego jedzenia owoców
-       else
-           AutoEatFruitEnabled = false  -- Zatrzymanie automatycznego jedzenia
-       end
-   end,
-})
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
-})
-
--- Tworzenie zakładki i sekcji w interfejsie
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Fruits")
-
--- Flaga kontrolująca automatyczne jedzenie owoców
-local AutoEatFruitEnabled = false
-
--- Funkcja automatycznego jedzenia owoców (Shiny Watermelon)
-local function StartAutoEatFruit()
-    while AutoEatFruitEnabled do
-        -- Wysłanie zapytania do serwera o konsumpcję owocu "Shiny Watermelon"
-        local args = {
-            [1] = "d3b4771a5ed44e47a32087adbc74dc5b",  -- ID owocu "Shiny Watermelon"
-            [2] = 1  -- Ilość owoców do spożycia (1 owoc)
-        }
-        game:GetService("ReplicatedStorage").Network:FindFirstChild("Fruits: Consume"):InvokeServer(unpack(args))
-        print("Spożyto owoc Shiny Watermelon")  -- Informacja w konsoli
-        wait(1)  -- Opóźnienie między próbami
-    end
-end
-
--- Tworzenie przełącznika (Toggle) do włączania/wyłączania automatycznego jedzenia owoców
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto Eat Shiny Watermelon",
-   CurrentValue = false,
-   Flag = "auto fruit",
-   Callback = function(Value)
-       if Value then
-           AutoEatFruitEnabled = true
-           StartAutoEatFruit()  -- Rozpoczęcie automatycznego jedzenia owoców
-       else
-           AutoEatFruitEnabled = false  -- Zatrzymanie automatycznego jedzenia
-       end
-   end,
-})
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
-})
-
--- Tworzenie zakładki i sekcji w interfejsie
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Fruits")
-
--- Flaga kontrolująca automatyczne jedzenie owoców
-local AutoEatFruitEnabled = false
-
--- Funkcja automatycznego jedzenia owoców (Shiny Rainbow)
-local function StartAutoEatFruit()
-    while AutoEatFruitEnabled do
-        -- Wysłanie zapytania do serwera o konsumpcję owocu "Shiny Rainbow"
-        local args = {
-            [1] = "a1b3f1b841b94ede84f53b140040a8fb",  -- ID owocu "Shiny Rainbow"
-            [2] = 1  -- Ilość owoców do spożycia (1 owoc)
-        }
-        game:GetService("ReplicatedStorage").Network:FindFirstChild("Fruits: Consume"):InvokeServer(unpack(args))
-        print("Spożyto owoc Shiny Rainbow")  -- Informacja w konsoli
-        wait(1)  -- Opóźnienie między próbami
-    end
-end
-
--- Tworzenie przełącznika (Toggle) do włączania/wyłączania automatycznego jedzenia owoców
-local Toggle = MainTab:CreateToggle({
-   Name = "Auto Eat Shiny Rainbow",
-   CurrentValue = false,
-   Flag = "auto fruit",
-   Callback = function(Value)
-       if Value then
-           AutoEatFruitEnabled = true
-           StartAutoEatFruit()  -- Rozpoczęcie automatycznego jedzenia owoców
-       else
-           AutoEatFruitEnabled = false  -- Zatrzymanie automatycznego jedzenia
        end
    end,
 })
