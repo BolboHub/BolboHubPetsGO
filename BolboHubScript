@@ -57,6 +57,41 @@ local Toggle = MainTab:CreateToggle({
    end,
 })
 
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+-- Tworzenie głównego okna Rayfield
+local Window = Rayfield:CreateWindow({
+   Name = "Bolbo Hub | Pets GO",
+   LoadingTitle = "Pets GO",
+   LoadingSubtitle = "Loading Bolbo Hub",
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil,
+      FileName = "Bolbo Hub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
+   },
+   KeySystem = true,
+   KeySettings = {
+      Title = "Key | Bolbo Hub",
+      Subtitle = "Key System",
+      Note = "Key In Discord Server",
+      FileName = "BolboHubKey",
+      SaveKey = true,
+      GrabKeyFromSite = true,
+      Key = {"https://pastebin.com/raw/DJiY26CD"}
+   }
+})
+
+local MainTab = Window:CreateTab("Main", nil)
+local MainSection = MainTab:CreateSection("Roll")
+
+-- Flaga kontrolująca pętlę teleportacji
+local monitoring = false
+
 local Toggle = MainTab:CreateToggle({
    Name = "Auto Fish",
    CurrentValue = false,
@@ -64,36 +99,36 @@ local Toggle = MainTab:CreateToggle({
    Callback = function(Value)
        local targetPosition = Vector3.new(-204.566, 2.07661, 206.916)
        local player = game.Players.LocalPlayer
-       
+
        -- Funkcja do teleportowania gracza
        local function teleportToTarget()
-           player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
-       end
-       
-       -- Pętla monitorująca pozycję gracza
-       local function monitorPlayerPosition()
-           while Value do
-               local currentPosition = player.Character.HumanoidRootPart.Position
-               local distance = (currentPosition - targetPosition).Magnitude
-               
-               -- Jeśli gracz jest oddalony o więcej niż 5 jednostek, teleportuj go
-               if distance > 5 then
-                   teleportToTarget()
-               end
-               task.wait(1)  -- Sprawdzanie co 1 sekundę
+           if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+               player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
            end
        end
-       
-       -- Jeśli toggle jest włączone, uruchamiamy monitorowanie pozycji
+
+       -- Pętla monitorująca pozycję gracza
        if Value then
-           teleportToTarget()  -- Teleportujemy gracza na początek
-           monitorPlayerPosition()
+           monitoring = true
+           task.spawn(function()
+               while monitoring do
+                   local currentPosition = player.Character.HumanoidRootPart.Position
+                   local distance = (currentPosition - targetPosition).Magnitude
+
+                   -- Jeśli gracz jest oddalony o więcej niż 5 jednostek, teleportuj go
+                   if distance > 5 then
+                       teleportToTarget()
+                   end
+                   task.wait(1) -- Sprawdzanie co 1 sekundę
+               end
+           end)
+       else
+           monitoring = false -- Zatrzymujemy pętlę, jeśli toggle jest wyłączone
        end
    end,
 })
 
-local ShopTab = Window:CreateTab("Shop", nil)
-local MainSection = MainTab:CreateSection("Vending Machine")
+local ShopSection = ShopTab:CreateSection("Vending Machine")
 
 -- Flaga kontrolująca działanie automatycznego vending machine
 local AutoVendingMachineEnabled = false
@@ -113,7 +148,7 @@ local function StartAutoVendingMachine()
 end
 
 -- Dodanie toggle do włączania/wyłączania funkcji
-local Toggle = MainTab:CreateToggle({
+local Toggle = ShopTab:CreateToggle({
    Name = "Auto Buy VendingMachine",
    CurrentValue = false,
    Flag = "autoVendingMachine",
@@ -127,7 +162,7 @@ local Toggle = MainTab:CreateToggle({
    end,
 })
 
-local MainSection = MainTab:CreateSection("Auto Buy Merchant")
+local ShopSection = MainTab:CreateSection("Auto Buy Merchant")
 
 -- Flaga kontrolująca automatyczne zakupy u merchantów
 local AutoMerchantEnabled = false
@@ -148,7 +183,7 @@ local function StartAutoMerchant()
 end
 
 -- Dodanie toggle do włączania/wyłączania automatycznego zakupu u merchantów
-local Toggle = MainTab:CreateToggle({
+local Toggle = ShopTab:CreateToggle({
    Name = "Auto Merchant",
    CurrentValue = false,
    Flag = "auto merchant",
@@ -162,7 +197,7 @@ local Toggle = MainTab:CreateToggle({
    end,
 })
 
-local MainSection = MainTab:CreateSection("Auto Buy Fish Merchant")
+local ShopSection = MainTab:CreateSection("Auto Buy Fish Merchant")
 
 -- Flaga kontrolująca automatyczne działanie
 local AutoFishingMerchantEnabled = false
@@ -224,7 +259,7 @@ local function StartAutoFishingMerchant()
 end
 
 -- Dodanie toggle do włączania/wyłączania automatycznego zakupu u FishingMerchant
-local Toggle = MainTab:CreateToggle({
+local Toggle = ShopTab:CreateToggle({
    Name = "Auto Fishing Merchant",
    CurrentValue = false,
    Flag = "auto fishing merchant",
