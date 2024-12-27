@@ -57,36 +57,6 @@ local Toggle = MainTab:CreateToggle({
    end,
 })
 
--- Tworzenie głównego okna Rayfield
-local Window = Rayfield:CreateWindow({
-   Name = "Bolbo Hub | Pets GO",
-   LoadingTitle = "Pets GO",
-   LoadingSubtitle = "Loading Bolbo Hub",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Bolbo Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Key | Bolbo Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "BolboHubKey",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/DJiY26CD"}
-   }
-})
-
-local MainTab = Window:CreateTab("Main", nil)
-local MainSection = MainTab:CreateSection("Roll")
-
 -- Flaga kontrolująca pętlę teleportacji
 local monitoring = false
 
@@ -126,6 +96,7 @@ local Toggle = MainTab:CreateToggle({
    end,
 })
 
+local ShopTab = Window:CreateTab("Shop", nil)
 local ShopSection = ShopTab:CreateSection("Vending Machine")
 
 -- Flaga kontrolująca działanie automatycznego vending machine
