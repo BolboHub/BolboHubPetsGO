@@ -57,6 +57,53 @@ local Toggle = MainTab:CreateToggle({
    end,
 })
 
+local Toggle = MainTab:CreateToggle({
+    Name = "Auto Farm Coins",
+    CurrentValue = false,
+    Flag = "autofarmcoins", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        
+        -- Funkcja do teleportacji i klikania
+        local function autoFarm()
+            while Value do
+                -- Znalezienie losowego obiektu Main w BREAKABLE_SPAWNS
+                local breakableSpawns = game.Workspace.MAP.BREAKABLE_SPAWNS:GetChildren()
+                local randomMain
+                
+                for _, spawn in pairs(breakableSpawns) do
+                    if spawn:FindFirstChild("Main") then
+                        randomMain = spawn.Main
+                        break
+                    end
+                end
+                
+                -- Jeśli znaleziono Main
+                if randomMain then
+                    -- Teleport gracza
+                    character:WaitForChild("HumanoidRootPart").CFrame = randomMain.CFrame
+                    
+                    -- Kliknięcie na Main (symulacja interakcji)
+                    fireclickdetector(randomMain:FindFirstChildOfClass("ClickDetector"))
+                    
+                    -- Czekanie przez 5 sekund
+                    task.wait(5)
+                else
+                    print("Nie znaleziono obiektu Main.")
+                    task.wait(1) -- Czekanie 1 sekundy, jeśli nie znaleziono obiektu Main
+                end
+            end
+        end
+        
+        -- Uruchomienie farmienia, jeśli toggle jest włączone
+        if Value then
+            task.spawn(autoFarm)
+        end
+    end,
+})
+
+
 -- Flaga kontrolująca pętlę teleportacji
 local monitoring = false
 
