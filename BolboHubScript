@@ -1,1 +1,92 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
+-- Tworzenie głównego okna Rayfield
+local Window = Rayfield:CreateWindow({
+   Name = "Bolbo Hub | Pets GO",
+   LoadingTitle = "Pets GO",
+   LoadingSubtitle = "Loading Bolbo Hub",
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil,
+      FileName = "Bolbo Hub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
+   },
+   KeySystem = true,
+   KeySettings = {
+      Title = "Key | Bolbo Hub",
+      Subtitle = "Key System",
+      Note = "Key In Discord Server",
+      FileName = "BolboHubKey",
+      SaveKey = true,
+      GrabKeyFromSite = true,
+      Key = {"https://pastebin.com/raw/DJiY26CD"}
+   }
+})
+
+local MainTab = Window:CreateTab("Main", nil)
+local MainSection = MainTab:CreateSection("Auto Upgrade")
+
+local upgrades = {
+    "Coins", "Faster Hatch", "Even Faster Hatch", "Instant Hatch", "Inventory",
+    "Golden Dice", "Boosts", "Leveling", "Trading", "Faster Auto Roll",
+    "Luckier", "Shiny Golden Dice", "Breakables", "Hide Rolls", "Turbo Auto Roll",
+    "Gold Strikes", "Rainbow Dice", "Roll Items", "Daily Bonus Roll", "24Karat Dice",
+    "Hoverboard", "Potions", "More Fruit", "Bioengineered Fruit", "Finding Fruit",
+    "Amazing Fruit", "Delicious Fruit", "Fruit Baskets", "Rainbow Fruit", "Ultra Fruit",
+    "Shiny Fruit", "Fruit Machine", "More Frequent Fruit", "Shiny Recipe", "Find Shiny Fruit",
+    "Rarer Fruits", "Cheaper Shiny Fruit", "More Shiny Fruit", "Over the Rainbow",
+    "Discount Shiny Fruit", "Shiny Rainbow Fruit", "Super Polished Fruit", "Double Rainbow",
+    "Glimmering Fruit", "Irresistible Fruit", "More XP", "Valuable Pets", "Double XP",
+    "Item Rewards", "Very Valuable Pets", "XP Farmer", "XP Jars", "Better Items",
+    "Paychecks", "Legendary Pets", "Buckets of XP", "XP Rebirth", "More Jars", "More Items",
+    "Better Paychecks", "Friends Boost", "Ultra Pets", "XP Sensei", "Large XP Jars",
+    "Super Paychecks", "Unbreakable Bond", "More Friends", "Luckier XP Jars",
+    "Billionaire Vault", "Better Together", "Mega Vault", "Party Thrower", "Worldwide Friends",
+    "Ultimate Vault", "Famous", "Pet Index", "Trading Plaza", "Index Shop", "Mailbox",
+    "Trading Booth", "Advanced Index Shop", "View Pet Details", "Bigger Mailbox",
+    "Cheaper Postage", "Bigger Booth", "Booth Skins", "Trading Terminal", "Collections Expert",
+    "Random Discounts", "View Player Info", "Even Bigger Mailbox", "Even Bigger Booth",
+    "Egg Booth Skin", "Pixel Booth Skin", "Collections Master", "Super Sized Mailbox",
+    "Parrot Booth Skin", "Merchant Booth Skin", "Summer Booth Skin", "HUGE Mailbox",
+    "Axolotl Booth Skin", "Giraffe Booth Skin", "Fishing Booth Skin", "Safety Booth Skin",
+    "Corgi Booth Skin", "Panda Booth Skin", "Dragon Booth Skin", "Unicorn Booth Skin",
+    "Pinata Booth Skin", "Strawberry Booth Skin", "Super Lucky", "Lucky Pets", "Luck Events",
+    "Spotted Egg", "Luckiest Pets", "Cat Egg", "Pet Bounty", "More Often", "Duped Pets",
+    "Huge Pets", "Paw Print Egg", "Digging For Coins", "Second Bounty", "Faster Rolling Events",
+    "More Coins Events", "Luckier Duped Pets", "Serial Advantage", "Shiny Pets"
+}
+
+local toggle = false
+local player = game.Players.LocalPlayer
+
+-- Funkcja do ulepszania rzeczy
+local function upgradeItems()
+    while toggle do
+        for _, upgradeName in ipairs(upgrades) do
+            if not toggle then break end -- Wyjdź, jeśli toggle zostanie wyłączony
+            local args = {upgradeName}
+            game:GetService("ReplicatedStorage").Network.Upgrades_Purchase:InvokeServer(unpack(args))
+            wait(0.5)
+        end
+    end
+end
+
+-- Obsługa GUI toggle
+local Toggle = MainTab:CreateToggle({
+    Name = "Auto Farm",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        toggle = Value
+        if toggle then
+            print("Auto Farm Enabled")
+            upgradeItems()
+        else
+            print("Auto Farm Disabled")
+        end
+    end,
+})
